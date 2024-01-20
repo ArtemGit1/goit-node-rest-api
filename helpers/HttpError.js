@@ -4,12 +4,23 @@ const messageList = {
     403: "Forbidden",
     404: "Not Found",
     409: "Conflict",
-}
-
-const HttpError = (status, message = messageList[status]) => {
-    const error = new Error(message);
-    error.status = status;
-    return error;
-}
-
-export default HttpError;
+  };
+  
+  class HttpError {
+    constructor(status, message = messageList[status], data = null) {
+      this.status = status;
+      this.message = message;
+      this.data = data;
+    }
+  
+    toJson() {
+      return {
+        status: this.status,
+        message: this.message,
+        data: this.data,
+      };
+    }
+  }
+  
+  module.exports = HttpError;
+  
