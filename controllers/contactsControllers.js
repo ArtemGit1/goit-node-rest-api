@@ -41,6 +41,9 @@ const deleteContact = async (req, res) => {
 const createContact = async (req, res) => {
   const { name, email, phone } = req.body;
   try {
+    if (!name || !email || !phone) {
+      throw new HttpError(400, "All fields (name, email, phone) are required");
+    }
     const newContact = await contactsService.addContact(name, email, phone);
     res.status(201).json(newContact);
   } catch (error) {
@@ -63,8 +66,12 @@ const updateContact = async (req, res) => {
       res.status(404).json(new HttpError(404, "Not found"));
     }
   } catch (error) {
-    res.status(error.statusCode || 500).json(new HttpError(error.statusCode || 500, error.message));
+    const isHttpError = error instanceof HttpError;
+    res.status(isHttpError ? error.status : 500).json({
+      message: isHttpError ? error.message : "Internal Server Error",
+    });
   }
 };
+
 
 module.exports = { getAllContacts, getOneContact, deleteContact, createContact, updateContact };
