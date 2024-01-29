@@ -1,5 +1,4 @@
 const contactsService = require('../services/contactsService');
-
 const HttpError = require('../helpers/HttpError');
 
 const updateFavoriteStatus = async (req, res) => {
@@ -7,11 +6,9 @@ const updateFavoriteStatus = async (req, res) => {
   const { favorite } = req.body;
 
   try {
-
     if (favorite === undefined) {
       throw new HttpError(400, 'Body must have a "favorite" field');
     }
-
 
     const updatedContact = await contactsService.updateContact(contactId, { favorite });
 
