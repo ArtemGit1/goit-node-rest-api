@@ -1,12 +1,12 @@
 const contactsService = require("../services/contactsService");
 const HttpError = require("../helpers/HttpError");
 
-const getAllContacts = async (req, res) => {
+const getAllContacts = async () => {
   try {
-    const contacts = await contactsService.listContacts();
-    res.status(200).json(contacts);
+    const contacts = await Contact.find();
+    return contacts;
   } catch (error) {
-    res.status(500).json(new HttpError(500, error.message));
+    throw new HttpError(500, 'Internal Server Error');
   }
 };
 
