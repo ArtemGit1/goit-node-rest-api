@@ -1,8 +1,11 @@
+const mongoose = require('mongoose');
 const Contact = require('../models/contactModel');
+const HttpError = require('../helpers/HttpError');
 
 const listContacts = async () => {
   try {
-    return await Contact.find();
+    const contacts = await Contact.find();
+    return contacts;
   } catch (error) {
     throw error;
   }
@@ -10,7 +13,17 @@ const listContacts = async () => {
 
 const getContactById = async (contactId) => {
   try {
-    return await Contact.findById(contactId);
+    if (!mongoose.Types.ObjectId.isValid(contactId)) {
+      throw new HttpError('Invalid contact ID');
+    }
+
+    const contact = await Contact.findById(contactId);
+
+    if (!contact) {
+      throw new HttpError('Contact not found');
+    }
+
+    return contact;
   } catch (error) {
     throw error;
   }
@@ -18,15 +31,27 @@ const getContactById = async (contactId) => {
 
 const removeContact = async (contactId) => {
   try {
-    return await Contact.findByIdAndRemove(contactId);
+    if (!mongoose.Types.ObjectId.isValid(contactId)) {
+      throw new HttpError(400, 'Invalid contact ID');
+    }
+
+    const removedContact = await Contact.findOneAndDelete({ _id: contactId });
+
+    if (!removedContact) {
+      throw new HttpError(404, 'Contact not found');
+    }
+
+    return removedContact;
   } catch (error) {
-    throw error;
+    throw new HttpError(error.statusCode || 500, error.message);
   }
 };
 
+
 const addContact = async (name, email, phone) => {
   try {
-    return await Contact.create({ name, email, phone });
+    const newContact = await Contact.create({ name, email, phone });
+    return newContact;
   } catch (error) {
     throw error;
   }
@@ -34,9 +59,19 @@ const addContact = async (name, email, phone) => {
 
 const updateContact = async (contactId, updatedFields) => {
   try {
-    return await Contact.findByIdAndUpdate(contactId, updatedFields, { new: true });
+    if (!mongoose.Types.ObjectId.isValid(contactId)) {
+      throw new HttpError(400, 'Invalid contact ID');
+    }
+
+    const contact = await Contact.findByIdAndUpdate(contactId, updatedFields, { new: true });
+
+    if (!contact) {
+      throw new HttpError(404, 'Contact not found');
+    }
+
+    return contact;
   } catch (error) {
-    throw error;
+    throw new HttpError(error.statusCode || 500, error.message);
   }
 };
 

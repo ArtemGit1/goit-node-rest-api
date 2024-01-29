@@ -1,10 +1,8 @@
 const express = require('express');
-const { updateFavoriteStatus } = require('../controllers/favoriteController');
+const favoriteController = require('../controllers/favoriteController');
+
+const router = express.Router();
+router.patch('/:contactId/favorite', favoriteController.updateFavoriteStatus);
 
 
-const favoriteRouter = express.Router();
-
-
-favoriteRouter.patch('/:contactId/favorite', updateFavoriteStatus);
-
-module.exports = favoriteRouter;
+module.exports = router;
