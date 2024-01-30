@@ -11,6 +11,7 @@ const listContacts = async () => {
   }
 };
 
+
 const getContactById = async (contactId) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(contactId)) {
