@@ -19,10 +19,10 @@ const getOneContact = async (req, res) => {
     if (contact) {
       res.status(200).json(contact);
     } else {
-      res.status(404).json(new HttpError(404, "Not found"));
+      res.status(404).json({ message: "Contact not found" });
     }
   } catch (error) {
-    res.status(500).json(new HttpError(500, error.message));
+    res.status(400).json({ message: "Invalid contact ID" });
   }
 };
 
@@ -33,10 +33,10 @@ const deleteContact = async (req, res) => {
     if (deletedContact) {
       res.status(200).json(deletedContact);
     } else {
-      res.status(404).json(new HttpError(404, "Not found"));
+      res.status(404).json({ message: "Contact not found" });
     }
   } catch (error) {
-    res.status(500).json(new HttpError(500, error.message));
+    res.status(400).json({ message: "Invalid contact ID" });
   }
 };
 
@@ -56,24 +56,25 @@ const createContact = async (req, res) => {
 const updateContact = async (req, res) => {
   const { id } = req.params;
   const updatedFields = req.body;
+  
   try {
     if (Object.keys(updatedFields).length === 0) {
       throw new HttpError(400, "Body must have at least one field");
     }
 
     const updatedContact = await contactsService.updateContact(id, updatedFields);
+    
     if (updatedContact) {
       res.status(200).json(updatedContact);
     } else {
-      res.status(404).json(new HttpError(404, "Not found"));
+      throw new HttpError(404, "Contact not found");
     }
   } catch (error) {
-    const isHttpError = error instanceof HttpError;
-    res.status(isHttpError ? error.status : 500).json({
-      message: isHttpError ? error.message : "Internal Server Error",
-    });
+    res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
+
+
 
 
 module.exports = { getAllContacts, getOneContact, deleteContact, createContact, updateContact };
