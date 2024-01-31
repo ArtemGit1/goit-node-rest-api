@@ -1,6 +1,7 @@
 const contactsService = require("../services/contactsService");
 const HttpError = require("../helpers/HttpError");
 const Contact = require("../models/contactModel");
+const mongoose = require('mongoose');
 
 const getAllContacts = async (req, res) => {
   try {
@@ -56,24 +57,27 @@ const createContact = async (req, res) => {
 const updateContact = async (req, res) => {
   const { id } = req.params;
   const updatedFields = req.body;
-  
-  try {
-    if (Object.keys(updatedFields).length === 0) {
-      throw new HttpError(400, "Body must have at least one field");
-    }
 
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid contact ID" });
+  }
+
+  if (Object.keys(updatedFields).length === 0) {
+    return res.status(400).json({ message: "Body must have at least one field" });
+  }
+
+  try {
     const updatedContact = await contactsService.updateContact(id, updatedFields);
-    
+
     if (updatedContact) {
       res.status(200).json(updatedContact);
     } else {
       throw new HttpError(404, "Contact not found");
     }
-  } catch (error) {
-    res.status(error.statusCode || 500).json({ message: error.message });
+  } finally {
+
   }
 };
-
 
 
 
