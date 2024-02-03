@@ -15,13 +15,13 @@ const listContacts = async () => {
 const getContactById = async (contactId) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(contactId)) {
-      throw new HttpError('Invalid contact ID');
+      throw new HttpError(400, 'Invalid contact ID');
     }
 
     const contact = await Contact.findById(contactId);
 
     if (!contact) {
-      throw new HttpError('Contact not found');
+      throw new HttpError(404, 'Contact not found');
     }
 
     return contact;
@@ -44,7 +44,7 @@ const removeContact = async (contactId) => {
 
     return removedContact;
   } catch (error) {
-    throw new HttpError(error.statusCode || 500, error.message);
+    throw error;
   }
 };
 
@@ -72,7 +72,7 @@ const updateContact = async (contactId, updatedFields) => {
 
     return contact;
   } catch (error) {
-    throw new HttpError(error.statusCode || 500, error.message);
+    throw error;
   }
 };
 
