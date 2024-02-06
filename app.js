@@ -4,6 +4,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const contactsRouter = require("./routes/contactsRouter");
 const favoriteRouter = require("./routes/favoriteRouter");
+const userRouter = require('./routes/userRouter');
 const db = require("./services/db");
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(express.json());
 
 app.use("/api/contacts", contactsRouter);
 app.use("/api/contacts", favoriteRouter);
+app.use('/users', userRouter);
 
 
 app.use((_, res) => {
@@ -24,6 +26,8 @@ app.use((err, req, res, next) => {
   const { status = 500, message = "Server error" } = err;
   res.status(status).json({ message });
 });
+
+
 
 const PORT = process.env.PORT || 3000;
 
