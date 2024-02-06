@@ -56,12 +56,12 @@ const createContact = async (req, res, next) => {
   const { name, email, phone } = req.body;
   try {
     if (!name || !email || !phone) {
-      throw new HttpError(400, "All fields (name, email, phone) are required");
+      return res.status(400).json({ message: "All fields (name, email, phone) are required" });
     }
     const newContact = await contactsService.addContact(name, email, phone);
     res.status(201).json(newContact);
   } catch (error) {
-    res.status(400).json(new HttpError(400, error.message));
+    res.status(400).json({ message: error.message });
   }
 };
 
