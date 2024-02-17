@@ -21,4 +21,10 @@ userRouter.get('/current', authMiddleware, authController.getCurrentUser);
 userRouter.patch('/avatars', authMiddleware, upload.single('avatar'), updateAvatar);
 
 
+userRouter.get('/verify/:verificationToken', authController.verifyEmail);
+
+
+userRouter.post('/resend-verification', authController.resendVerificationEmail);
+
+
 module.exports = userRouter;
