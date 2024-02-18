@@ -24,7 +24,7 @@ userRouter.patch('/avatars', authMiddleware, upload.single('avatar'), updateAvat
 userRouter.get('/verify/:verificationToken', authController.verifyEmail);
 
 
-userRouter.post('/resend-verification', authController.resendVerificationEmail);
+userRouter.post('/users/verify', authController.resendVerificationEmail);
 
 
 module.exports = userRouter;
